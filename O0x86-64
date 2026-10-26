@@ -1,0 +1,110 @@
+.LC4:
+        .string "N = %llu   time = %.15f\n"
+"main":
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 144
+        movsd   xmm0, QWORD PTR .LC0[rip]
+        movsd   QWORD PTR [rbp-40], xmm0
+        mov     QWORD PTR [rbp-112], 1000000000
+        mov     QWORD PTR [rbp-104], 2000000000
+        movabs  rax, 5000000000
+        mov     QWORD PTR [rbp-96], rax
+        movabs  rax, 10000000000
+        mov     QWORD PTR [rbp-88], rax
+        movabs  rax, 20000000000
+        mov     QWORD PTR [rbp-80], rax
+        mov     DWORD PTR [rbp-44], 5
+        mov     DWORD PTR [rbp-4], 0
+        jmp     .L2
+.L7:
+        mov     eax, DWORD PTR [rbp-4]
+        cdqe
+        mov     rax, QWORD PTR [rbp-112+rax*8]
+        mov     QWORD PTR [rbp-56], rax
+        pxor    xmm0, xmm0
+        movsd   QWORD PTR [rbp-16], xmm0
+        movsd   xmm0, QWORD PTR [rbp-40]
+        movsd   QWORD PTR [rbp-24], xmm0
+        lea     rax, [rbp-128]
+        mov     rsi, rax
+        mov     edi, 4
+        call    "clock_gettime"
+        mov     QWORD PTR [rbp-32], 1
+        jmp     .L3
+.L6:
+        mov     rax, QWORD PTR [rbp-32]
+        test    rax, rax
+        js      .L4
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rax
+        jmp     .L5
+.L4:
+        mov     rdx, rax
+        shr     rdx
+        and     eax, 1
+        or      rdx, rax
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rdx
+        addsd   xmm0, xmm0
+.L5:
+        movsd   xmm1, QWORD PTR [rbp-24]
+        divsd   xmm1, xmm0
+        movsd   xmm0, QWORD PTR [rbp-16]
+        addsd   xmm0, xmm1
+        movsd   QWORD PTR [rbp-16], xmm0
+        movsd   xmm0, QWORD PTR [rbp-40]
+        movq    xmm1, QWORD PTR .LC2[rip]
+        xorpd   xmm0, xmm1
+        movsd   xmm1, QWORD PTR [rbp-24]
+        mulsd   xmm0, xmm1
+        movsd   QWORD PTR [rbp-24], xmm0
+        add     QWORD PTR [rbp-32], 1
+.L3:
+        mov     rax, QWORD PTR [rbp-32]
+        cmp     QWORD PTR [rbp-56], rax
+        jnb     .L6
+        lea     rax, [rbp-144]
+        mov     rsi, rax
+        mov     edi, 4
+        call    "clock_gettime"
+        mov     rdx, QWORD PTR [rbp-144]
+        mov     rax, QWORD PTR [rbp-128]
+        sub     rdx, rax
+        pxor    xmm1, xmm1
+        cvtsi2sd        xmm1, rdx
+        mov     rdx, QWORD PTR [rbp-136]
+        mov     rax, QWORD PTR [rbp-120]
+        sub     rdx, rax
+        pxor    xmm2, xmm2
+        cvtsi2sd        xmm2, rdx
+        movsd   xmm0, QWORD PTR .LC3[rip]
+        mulsd   xmm0, xmm2
+        addsd   xmm0, xmm1
+        movsd   QWORD PTR [rbp-64], xmm0
+        mov     rdx, QWORD PTR [rbp-64]
+        mov     rax, QWORD PTR [rbp-56]
+        movq    xmm0, rdx
+        mov     rsi, rax
+        mov     edi, OFFSET FLAT:.LC4
+        mov     eax, 1
+        call    "printf"
+        add     DWORD PTR [rbp-4], 1
+.L2:
+        mov     eax, DWORD PTR [rbp-4]
+        cmp     eax, DWORD PTR [rbp-44]
+        jl      .L7
+        mov     eax, 0
+        leave
+        ret
+.LC0:
+        .long   0
+        .long   1071644672
+.LC2:
+        .long   0
+        .long   -2147483648
+        .long   0
+        .long   0
+.LC3:
+        .long   -400107883
+        .long   1041313291
