@@ -1,0 +1,104 @@
+.LC4:
+        .string "N = %llu   time = %.15f\n"
+.LC5:
+        .string "S = %.15f\n"
+"main":
+        push    r14
+        push    r13
+        push    r12
+        push    rbp
+        push    rbx
+        sub     rsp, 96
+        mov     QWORD PTR [rsp+48], 1000000000
+        mov     QWORD PTR [rsp+56], 2000000000
+        movabs  rax, 5000000000
+        mov     QWORD PTR [rsp+64], rax
+        movabs  rax, 10000000000
+        mov     QWORD PTR [rsp+72], rax
+        movabs  rax, 20000000000
+        mov     QWORD PTR [rsp+80], rax
+        lea     rbp, [rsp+48]
+        lea     r14, [rsp+88]
+        lea     r13, [rsp+16]
+        lea     r12, [rsp+32]
+        jmp     .L6
+.L3:
+        mov     rdx, rax
+        shr     rdx
+        mov     rcx, rax
+        and     ecx, 1
+        or      rdx, rcx
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rdx
+        addsd   xmm0, xmm0
+.L4:
+        movapd  xmm2, xmm1
+        divsd   xmm2, xmm0
+        addsd   xmm2, QWORD PTR [rsp+8]
+        movsd   QWORD PTR [rsp+8], xmm2
+        mulsd   xmm1, QWORD PTR .LC2[rip]
+        add     rax, 1
+        cmp     rbx, rax
+        jb      .L2
+.L5:
+        test    rax, rax
+        js      .L3
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rax
+        jmp     .L4
+.L7:
+        mov     QWORD PTR [rsp+8], 0x000000000
+.L2:
+        mov     rsi, r12
+        mov     edi, 4
+        call    "clock_gettime"
+        mov     rax, QWORD PTR [rsp+40]
+        sub     rax, QWORD PTR [rsp+24]
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rax
+        mulsd   xmm0, QWORD PTR .LC3[rip]
+        mov     rax, QWORD PTR [rsp+32]
+        sub     rax, QWORD PTR [rsp+16]
+        pxor    xmm1, xmm1
+        cvtsi2sd        xmm1, rax
+        addsd   xmm0, xmm1
+        mov     rsi, rbx
+        mov     edi, OFFSET FLAT:.LC4
+        mov     eax, 1
+        call    "printf"
+        movsd   xmm0, QWORD PTR [rsp+8]
+        mov     edi, OFFSET FLAT:.LC5
+        mov     eax, 1
+        call    "printf"
+        add     rbp, 8
+        cmp     rbp, r14
+        je      .L11
+.L6:
+        mov     rbx, QWORD PTR [rbp+0]
+        mov     rsi, r13
+        mov     edi, 4
+        call    "clock_gettime"
+        test    rbx, rbx
+        je      .L7
+        mov     eax, 1
+        movsd   xmm1, QWORD PTR .LC0[rip]
+        mov     QWORD PTR [rsp+8], 0x000000000
+        jmp     .L5
+.L11:
+        mov     eax, 0
+        add     rsp, 96
+        pop     rbx
+        pop     rbp
+        pop     r12
+        pop     r13
+        pop     r14
+        ret
+.LC0:
+        .long   0
+        .long   1071644672
+.LC2:
+        .long   0
+        .long   -1075838976
+.LC3:
+        .long   -400107883
+        .long   1041313291
