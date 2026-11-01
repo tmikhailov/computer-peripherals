@@ -27,6 +27,7 @@ int main(void) {
         double tm = (end.tv_sec - start.tv_sec) + 1e-9 * (end.tv_nsec - start.tv_nsec);
 
         printf("N = %llu   time = %.15f\n", N, tm);
+        printf("S = %.15f\n", s);
     }
 
     return 0;
