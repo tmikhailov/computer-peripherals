@@ -1,0 +1,101 @@
+.LC6:
+        .string "N = %llu   time = %.15f\n"
+.LC7:
+        .string "S = %.15f\n"
+"main":
+        movabs  rax, 20000000000
+        push    r12
+        push    rbp
+        push    rbx
+        sub     rsp, 96
+        movdqa  xmm0, XMMWORD PTR .LC2[rip]
+        mov     QWORD PTR [rsp+80], rax
+        lea     rbp, [rsp+48]
+        lea     r12, [rsp+88]
+        movaps  XMMWORD PTR [rsp+48], xmm0
+        movdqa  xmm0, XMMWORD PTR .LC3[rip]
+        movaps  XMMWORD PTR [rsp+64], xmm0
+.L6:
+        mov     rbx, QWORD PTR [rbp+0]
+        lea     rsi, [rsp+16]
+        mov     edi, 4
+        call    "clock_gettime"
+        movsd   xmm4, QWORD PTR .LC4[rip]
+        test    rbx, rbx
+        je      .L7
+        movsd   xmm1, QWORD PTR .LC0[rip]
+        mov     eax, 1
+        pxor    xmm2, xmm2
+        jmp     .L5
+.L12:
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rax
+.L4:
+        movapd  xmm3, xmm1
+        add     rax, 1
+        divsd   xmm3, xmm0
+        mulsd   xmm1, xmm4
+        addsd   xmm2, xmm3
+        cmp     rbx, rax
+        jb      .L2
+.L5:
+        test    rax, rax
+        jns     .L12
+        mov     rdx, rax
+        mov     rcx, rax
+        pxor    xmm0, xmm0
+        shr     rdx
+        and     ecx, 1
+        or      rdx, rcx
+        cvtsi2sd        xmm0, rdx
+        addsd   xmm0, xmm0
+        jmp     .L4
+.L7:
+        pxor    xmm2, xmm2
+.L2:
+        lea     rsi, [rsp+32]
+        mov     edi, 4
+        movsd   QWORD PTR [rsp+8], xmm2
+        add     rbp, 8
+        call    "clock_gettime"
+        pxor    xmm0, xmm0
+        pxor    xmm1, xmm1
+        mov     rsi, rbx
+        mov     rax, QWORD PTR [rsp+40]
+        sub     rax, QWORD PTR [rsp+24]
+        mov     edi, OFFSET FLAT:.LC6
+        cvtsi2sd        xmm0, rax
+        mulsd   xmm0, QWORD PTR .LC5[rip]
+        mov     rax, QWORD PTR [rsp+32]
+        sub     rax, QWORD PTR [rsp+16]
+        cvtsi2sd        xmm1, rax
+        mov     eax, 1
+        addsd   xmm0, xmm1
+        call    "printf"
+        movsd   xmm0, QWORD PTR [rsp+8]
+        mov     edi, OFFSET FLAT:.LC7
+        mov     eax, 1
+        call    "printf"
+        cmp     rbp, r12
+        jne     .L6
+        add     rsp, 96
+        xor     eax, eax
+        pop     rbx
+        pop     rbp
+        pop     r12
+        ret
+.LC0:
+        .long   0
+        .long   1071644672
+.LC2:
+        .quad   1000000000
+        .quad   2000000000
+.LC3:
+        .quad   5000000000
+        .quad   10000000000
+.LC4:
+        .long   0
+        .long   -1075838976
+.LC5:
+        .long   -400107883
+        .long   1041313291
